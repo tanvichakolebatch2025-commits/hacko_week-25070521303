@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ATM Queue System</title>
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        background: linear-gradient(135deg, #0f2027, #2c5364);
+        color: white;
+    }
+
+    header {
+        text-align: center;
+        padding: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        background: rgba(0,0,0,0.4);
+    }
+
+    .container {
+        width: 90%;
+        margin: 20px auto;
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 20px;
+    }
+
+    .card {
+        background: rgba(255,255,255,0.1);
+        padding: 20px;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    button {
+        padding: 10px;
+        border-radius: 10px;
+        border: none;
+        margin-top: 10px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .join {
+        background: #22c55e;
+        color: white;
+    }
+
+    .next {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .leave {
+        background: #ef4444;
+        color: white;
+    }
+
+    .clear {
+        background: #f59e0b;
+        color: black;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+        background: rgba(255,255,255,0.2);
+        margin-bottom: 10px;
+        padding: 12px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .token {
+        font-weight: bold;
+        color: #facc15;
+    }
+
+    .display {
+        text-align: center;
+        font-size: 40px;
+        margin-top: 20px;
+        color: #22c55e;
+    }
+
+    .status {
+        font-size: 12px;
+        color: #cbd5f5;
+    }
+
+</style>
+</head>
+
+<body>
+
+<header>🏧 ATM Queue Management</header>
+
+<div class="container">
+
+    <!-- Controls -->
+    <div class="card">
+        <h3>Customer</h3>
+        <button class="join" onclick="joinQueue()">Join Queue</button>
+
+        <h3 style="margin-top:20px;">ATM Control</h3>
+        <button class="next" onclick="nextPerson()">Next Person</button>
+        <button class="clear" onclick="clearQueue()">Clear Queue</button>
+
+        <div class="display" id="current">--</div>
+        <p style="text-align:center;">Now Using ATM</p>
+    </div>
+
+    <!-- Queue List -->
+    <div class="card">
+        <h3>Waiting Queue</h3>
+        <ul id="queueList"></ul>
+    </div>
+
+</div>
+
+<script>
+
+let queue = JSON.parse(localStorage.getItem("atmQueue")) || [];
+let current = localStorage.getItem("currentATM") || null;
+let token = localStorage.getItem("atmToken") || 1;
+
+function saveData() {
+    localStorage.setItem("atmQueue", JSON.stringify(queue));
+    localStorage.setItem("currentATM", current);
+    localStorage.setItem("atmToken", token);
+}
+
+function displayQueue() {
+    const list = document.getElementById("queueList");
+    list.innerHTML = "";
+
+    queue.forEach((t) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+            <span class="token">User #${t}</span>
+            <span class="status">Waiting</span>
+        `;
+        list.appendChild(li);
+    });
+
+    document.getElementById("current").innerText = current ? "User #" + current : "--";
+}
+
+function joinQueue() {
+    queue.push(token);
+    token++;
+    saveData();
+    displayQueue();
+}
+
+function nextPerson() {
+    if(queue.length > 0) {
+        current = queue.shift();
+        saveData();
+        displayQueue();
+    } else {
+        alert("No one in queue");
+    }
+}
+
+function clearQueue() {
+    queue = [];
+    current = null;
+    saveData();
+    displayQueue();
+}
+
+displayQueue();
+
+</script>
+
+</body>
+</html>
