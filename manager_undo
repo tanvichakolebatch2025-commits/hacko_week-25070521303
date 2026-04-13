@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Task Manager</title>
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+    }
+
+    header {
+        text-align: center;
+        padding: 20px;
+        font-size: 30px;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+    .container {
+        width: 80%;
+        margin: auto;
+        background: rgba(255,255,255,0.1);
+        padding: 20px;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    input {
+        width: 60%;
+        padding: 10px;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        margin-right: 10px;
+    }
+
+    button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+    .add {
+        background: #22c55e;
+        color: white;
+    }
+
+    .add:hover { background: #16a34a; }
+
+    .undo {
+        background: #f59e0b;
+        color: black;
+        margin-left: 10px;
+    }
+
+    .undo:hover { background: #d97706; }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin-top: 20px;
+    }
+
+    li {
+        background: rgba(255,255,255,0.2);
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: 0.3s;
+    }
+
+    li:hover {
+        transform: scale(1.02);
+    }
+
+    .done {
+        text-decoration: line-through;
+        opacity: 0.6;
+    }
+
+    .actions button {
+        margin-left: 5px;
+    }
+
+    .delete {
+        background: #ef4444;
+        color: white;
+    }
+
+    .complete {
+        background: #3b82f6;
+        color: white;
+    }
+
+</style>
+</head>
+
+<body>
+
+<header>📋 Task Manager (Undo Feature)</header>
+
+<div class="container">
+
+    <input type="text" id="taskInput" placeholder="Enter your task...">
+    <button class="add" onclick="addTask()">Add</button>
+    <button class="undo" onclick="undoTask()">Undo</button>
+
+    <ul id="taskList"></ul>
+
+</div>
+
+<script>
+
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let lastDeleted = null;
+
+function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function displayTasks() {
+    const list = document.getElementById("taskList");
+    list.innerHTML = "";
+
+    tasks.forEach((task, index) => {
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+            <span class="${task.done ? 'done' : ''}">${task.text}</span>
+            <div class="actions">
+                <button class="complete" onclick="toggleDone(${index})">✔</button>
+                <button class="delete" onclick="deleteTask(${index})">✖</button>
+            </div>
+        `;
+
+        list.appendChild(li);
+    });
+}
+
+function addTask() {
+    const input = document.getElementById("taskInput");
+
+    if(input.value.trim() !== "") {
+        tasks.push({ text: input.value, done: false });
+        input.value = "";
+        saveTasks();
+        displayTasks();
+    }
+}
+
+function deleteTask(index) {
+    lastDeleted = tasks[index];
+    tasks.splice(index, 1);
+    saveTasks();
+    displayTasks();
+}
+
+function undoTask() {
+    if(lastDeleted) {
+        tasks.push(lastDeleted);
+        lastDeleted = null;
+        saveTasks();
+        displayTasks();
+    } else {
+        alert("Nothing to undo!");
+    }
+}
+
+function toggleDone(index) {
+    tasks[index].done = !tasks[index].done;
+    saveTasks();
+    displayTasks();
+}
+
+displayTasks();
+
+</script>
+
+</body>
+</html>
