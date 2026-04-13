@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Printer Queue</title>
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #1d2671, #c33764);
+        color: white;
+        margin: 0;
+    }
+
+    header {
+        text-align: center;
+        padding: 20px;
+        font-size: 30px;
+        font-weight: bold;
+        letter-spacing: 2px;
+    }
+
+    .container {
+        width: 85%;
+        margin: auto;
+        background: rgba(255,255,255,0.1);
+        padding: 20px;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    input {
+        padding: 10px;
+        width: 60%;
+        border-radius: 10px;
+        border: none;
+        margin-right: 10px;
+    }
+
+    button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background: #22c55e;
+        color: white;
+        font-weight: bold;
+    }
+
+    button:hover {
+        opacity: 0.8;
+    }
+
+    table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: center;
+    }
+
+    th {
+        background: rgba(255,255,255,0.2);
+    }
+
+    tr {
+        background: rgba(255,255,255,0.1);
+        transition: 0.3s;
+    }
+
+    tr:hover {
+        background: rgba(255,255,255,0.2);
+    }
+
+    .status {
+        padding: 5px 10px;
+        border-radius: 8px;
+    }
+
+    .printing { background: orange; }
+    .completed { background: green; }
+    .pending { background: red; }
+
+    .delete {
+        background: #ef4444;
+    }
+
+</style>
+</head>
+
+<body>
+
+<header>🖨️ Printer Queue System</header>
+
+<div class="container">
+
+    <input type="text" id="jobInput" placeholder="Enter document name...">
+    <button onclick="addJob()">Add Job</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Job Name</th>
+                <th>Status</th>
+                <th>Progress</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="queueTable"></tbody>
+    </table>
+
+</div>
+
+<script>
+
+let queue = JSON.parse(localStorage.getItem("queue")) || [];
+
+function saveQueue() {
+    localStorage.setItem("queue", JSON.stringify(queue));
+}
+
+function displayQueue() {
+    const table = document.getElementById("queueTable");
+    table.innerHTML = "";
+
+    queue.forEach((job, index) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${job.name}</td>
+            <td><span class="status ${job.status}">${job.status}</span></td>
+            <td>${job.progress}%</td>
+            <td>
+                <button onclick="startPrint(${index})">Start</button>
+                <button class="delete" onclick="deleteJob(${index})">Delete</button>
+            </td>
+        `;
+
+        table.appendChild(row);
+    });
+}
+
+function addJob() {
+    const input = document.getElementById("jobInput");
+
+    if(input.value.trim() !== "") {
+        queue.push({
+            name: input.value,
+            status: "pending",
+            progress: 0
+        });
+
+        input.value = "";
+        saveQueue();
+        displayQueue();
+    }
+}
+
+function deleteJob(index) {
+    queue.splice(index, 1);
+    saveQueue();
+    displayQueue();
+}
+
+function startPrint(index) {
+    if(queue[index].status === "completed") return;
+
+    queue[index].status = "printing";
+
+    let interval = setInterval(() => {
+        if(queue[index].progress >= 100) {
+            queue[index].status = "completed";
+            clearInterval(interval);
+        } else {
+            queue[index].progress += 10;
+        }
+        saveQueue();
+        displayQueue();
+    }, 500);
+}
+
+displayQueue();
+
+</script>
+
+</body>
+</html>
