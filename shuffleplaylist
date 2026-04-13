@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Music Playlist Shuffle</title>
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        background: linear-gradient(135deg, #ff6a00, #ee0979);
+        color: white;
+        text-align: center;
+    }
+
+    header {
+        padding: 20px;
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    .player {
+        width: 350px;
+        margin: auto;
+        background: rgba(255,255,255,0.1);
+        padding: 20px;
+        border-radius: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    img {
+        width: 100%;
+        border-radius: 15px;
+    }
+
+    .title {
+        margin-top: 10px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .artist {
+        font-size: 14px;
+        color: #ddd;
+    }
+
+    .controls {
+        margin-top: 15px;
+    }
+
+    button {
+        padding: 10px;
+        margin: 5px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+    }
+
+    .play { background: #22c55e; }
+    .next { background: #3b82f6; }
+    .prev { background: #f59e0b; }
+    .shuffle { background: #ef4444; }
+
+    input[type=range] {
+        width: 100%;
+        margin-top: 10px;
+    }
+
+</style>
+</head>
+
+<body>
+
+<header>🎵 Playlist Shuffle Player</header>
+
+<div class="player">
+
+    <img id="cover" src="https://picsum.photos/300/200" alt="cover">
+
+    <div class="title" id="title">Song Name</div>
+    <div class="artist" id="artist">Artist</div>
+
+    <audio id="audio"></audio>
+
+    <input type="range" id="progress" value="0">
+
+    <div class="controls">
+        <button class="prev" onclick="prevSong()">⏮</button>
+        <button class="play" onclick="playPause()">▶</button>
+        <button class="next" onclick="nextSong()">⏭</button>
+        <button class="shuffle" onclick="shuffleSong()">🔀</button>
+    </div>
+
+</div>
+
+<script>
+
+const songs = [
+    {
+        title: "Dreams",
+        artist: "Artist 1",
+        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        cover: "https://picsum.photos/300/201"
+    },
+    {
+        title: "Vibes",
+        artist: "Artist 2",
+        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+        cover: "https://picsum.photos/300/202"
+    },
+    {
+        title: "Chill Beat",
+        artist: "Artist 3",
+        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+        cover: "https://picsum.photos/300/203"
+    }
+];
+
+let currentSong = 0;
+const audio = document.getElementById("audio");
+
+function loadSong(index) {
+    audio.src = songs[index].src;
+    document.getElementById("title").innerText = songs[index].title;
+    document.getElementById("artist").innerText = songs[index].artist;
+    document.getElementById("cover").src = songs[index].cover;
+}
+
+function playPause() {
+    if(audio.paused) {
+        audio.play();
+    } else {
+        audio.pause();
+    }
+}
+
+function nextSong() {
+    currentSong = (currentSong + 1) % songs.length;
+    loadSong(currentSong);
+    audio.play();
+}
+
+function prevSong() {
+    currentSong = (currentSong - 1 + songs.length) % songs.length;
+    loadSong(currentSong);
+    audio.play();
+}
+
+function shuffleSong() {
+    currentSong = Math.floor(Math.random() * songs.length);
+    loadSong(currentSong);
+    audio.play();
+}
+
+audio.addEventListener("timeupdate", () => {
+    const progress = document.getElementById("progress");
+    progress.value = (audio.currentTime / audio.duration) * 100;
+});
+
+document.getElementById("progress").addEventListener("input", function() {
+    audio.currentTime = (this.value / 100) * audio.duration;
+});
+
+loadSong(currentSong);
+
+</script>
+
+</body>
+</html>
