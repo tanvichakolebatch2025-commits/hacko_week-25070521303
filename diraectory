@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>File System Explorer</title>
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        color: white;
+    }
+
+    header {
+        padding: 15px;
+        text-align: center;
+        font-size: 26px;
+        font-weight: bold;
+        background: rgba(0,0,0,0.3);
+    }
+
+    .container {
+        width: 90%;
+        margin: 20px auto;
+        background: rgba(255,255,255,0.1);
+        padding: 20px;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+    }
+
+    input {
+        padding: 8px;
+        border-radius: 8px;
+        border: none;
+        margin-right: 10px;
+    }
+
+    button {
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .add-folder { background: #22c55e; color: white; }
+    .add-file { background: #3b82f6; color: white; }
+    .delete { background: #ef4444; color: white; }
+
+    ul {
+        list-style: none;
+        padding-left: 20px;
+    }
+
+    li {
+        margin: 8px 0;
+        cursor: pointer;
+    }
+
+    .folder::before {
+        content: "📁 ";
+    }
+
+    .file::before {
+        content: "📄 ";
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .node {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255,255,255,0.15);
+        padding: 8px;
+        border-radius: 8px;
+    }
+
+    .node:hover {
+        background: rgba(255,255,255,0.25);
+    }
+
+</style>
+</head>
+
+<body>
+
+<header>🗂️ File System Directory</header>
+
+<div class="container">
+
+    <input type="text" id="nameInput" placeholder="Enter file/folder name">
+    <button class="add-folder" onclick="addFolder()">📁 Add Folder</button>
+    <button class="add-file" onclick="addFile()">📄 Add File</button>
+
+    <ul id="root"></ul>
+
+</div>
+
+<script>
+
+let fileSystem = JSON.parse(localStorage.getItem("fs")) || [];
+
+function saveFS() {
+    localStorage.setItem("fs", JSON.stringify(fileSystem));
+}
+
+function renderFS(data, parent) {
+    parent.innerHTML = "";
+
+    data.forEach((item, index) => {
+        const li = document.createElement("li");
+
+        const div = document.createElement("div");
+        div.className = "node";
+
+        const name = document.createElement("span");
+        name.className = item.type;
+        name.innerText = item.name;
+
+        const del = document.createElement("button");
+        del.innerText = "Delete";
+        del.className = "delete";
+        del.onclick = (e) => {
+            e.stopPropagation();
+            data.splice(index, 1);
+            saveFS();
+            displayFS();
+        };
+
+        div.appendChild(name);
+        div.appendChild(del);
+        li.appendChild(div);
+
+        if(item.type === "folder") {
+            const ul = document.createElement("ul");
+            ul.classList.add("hidden");
+
+            div.onclick = () => {
+                ul.classList.toggle("hidden");
+            };
+
+            renderFS(item.children, ul);
+            li.appendChild(ul);
+        }
+
+        parent.appendChild(li);
+    });
+}
+
+function addFolder() {
+    const input = document.getElementById("nameInput");
+
+    if(input.value.trim() !== "") {
+        fileSystem.push({
+            name: input.value,
+            type: "folder",
+            children: []
+        });
+
+        input.value = "";
+        saveFS();
+        displayFS();
+    }
+}
+
+function addFile() {
+    const input = document.getElementById("nameInput");
+
+    if(input.value.trim() !== "") {
+        fileSystem.push({
+            name: input.value,
+            type: "file"
+        });
+
+        input.value = "";
+        saveFS();
+        displayFS();
+    }
+}
+
+function displayFS() {
+    const root = document.getElementById("root");
+    renderFS(fileSystem, root);
+}
+
+displayFS();
+
+</script>
+
+</body>
+</html>
