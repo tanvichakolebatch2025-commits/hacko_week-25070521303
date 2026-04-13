@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Exam Score Tracker</title>
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        background: linear-gradient(135deg, #4facfe, #00f2fe);
+        color: #fff;
+    }
+
+    header {
+        text-align: center;
+        padding: 20px;
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+    .container {
+        width: 85%;
+        margin: auto;
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 20px;
+    }
+
+    .card {
+        background: rgba(255,255,255,0.15);
+        padding: 20px;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0;
+        border-radius: 10px;
+        border: none;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        background: #22c55e;
+        color: white;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center;
+    }
+
+    th {
+        background: rgba(255,255,255,0.2);
+    }
+
+    tr {
+        background: rgba(255,255,255,0.1);
+    }
+
+    .delete {
+        background: red;
+        color: white;
+        border: none;
+        padding: 5px 8px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .summary {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .big {
+        font-size: 30px;
+        font-weight: bold;
+    }
+
+</style>
+</head>
+
+<body>
+
+<header>📊 Exam Score Tracker</header>
+
+<div class="container">
+
+    <!-- Input -->
+    <div class="card">
+        <h3>Add Subject</h3>
+        <input type="text" id="subject" placeholder="Subject Name">
+        <input type="number" id="marks" placeholder="Marks Obtained">
+        <input type="number" id="total" placeholder="Total Marks">
+        <button onclick="addScore()">Add Score</button>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+        <h3>Results</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Marks</th>
+                    <th>Total</th>
+                    <th>%</th>
+                    <th>Grade</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="scoreTable"></tbody>
+        </table>
+
+        <div class="summary">
+            <p class="big" id="percentage">0%</p>
+            <p id="grade">Grade: -</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+let scores = JSON.parse(localStorage.getItem("scores")) || [];
+
+function save() {
+    localStorage.setItem("scores", JSON.stringify(scores));
+}
+
+function getGrade(p) {
+    if(p >= 90) return "A+";
+    if(p >= 75) return "A";
+    if(p >= 60) return "B";
+    if(p >= 50) return "C";
+    return "Fail";
+}
+
+function display() {
+    const table = document.getElementById("scoreTable");
+    table.innerHTML = "";
+
+    let totalMarks = 0;
+    let obtained = 0;
+
+    scores.forEach((s, i) => {
+        let percent = ((s.marks / s.total) * 100).toFixed(1);
+
+        totalMarks += s.total;
+        obtained += s.marks;
+
+        table.innerHTML += `
+            <tr>
+                <td>${s.subject}</td>
+                <td>${s.marks}</td>
+                <td>${s.total}</td>
+                <td>${percent}%</td>
+                <td>${getGrade(percent)}</td>
+                <td><button class="delete" onclick="del(${i})">X</button></td>
+            </tr>
+        `;
+    });
+
+    let overall = totalMarks ? ((obtained / totalMarks) * 100).toFixed(1) : 0;
+
+    document.getElementById("percentage").innerText = overall + "%";
+    document.getElementById("grade").innerText = "Grade: " + getGrade(overall);
+}
+
+function addScore() {
+    const sub = document.getElementById("subject");
+    const marks = document.getElementById("marks");
+    const total = document.getElementById("total");
+
+    if(sub.value && marks.value && total.value) {
+        scores.push({
+            subject: sub.value,
+            marks: Number(marks.value),
+            total: Number(total.value)
+        });
+
+        sub.value = marks.value = total.value = "";
+        save();
+        display();
+    }
+}
+
+function del(i) {
+    scores.splice(i, 1);
+    save();
+    display();
+}
+
+display();
+
+</script>
+
+</body>
+</html>
