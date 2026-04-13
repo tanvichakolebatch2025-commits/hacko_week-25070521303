@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Green Leaf Veg Restaurant</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(to right, #d4fc79, #96e6a1);
+    }
+
+    header {
+        text-align: center;
+        padding: 20px;
+        background: #2e7d32;
+        color: white;
+        font-size: 28px;
+        letter-spacing: 2px;
+    }
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .card {
+        background: white;
+        width: 260px;
+        margin: 15px;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        overflow: hidden;
+        transition: transform 0.3s;
+    }
+
+    .card:hover {
+        transform: scale(1.07);
+    }
+
+    .card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+
+    .card-content {
+        padding: 15px;
+        text-align: center;
+    }
+
+    .card-content h3 {
+        color: #2e7d32;
+    }
+
+    .price {
+        color: #e67e22;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .btn {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 8px 15px;
+        background: #2e7d32;
+        color: white;
+        border-radius: 20px;
+        text-decoration: none;
+    }
+
+    .btn:hover {
+        background: #1b5e20;
+    }
+
+    footer {
+        text-align: center;
+        padding: 10px;
+        background: #2e7d32;
+        color: white;
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    🌿 Green Leaf Veg Restaurant 🌿
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d" alt="Paneer Butter Masala">
+        <div class="card-content">
+            <h3>Paneer Butter Masala</h3>
+            <p>Creamy tomato gravy with soft paneer cubes.</p>
+            <p class="price">₹250</p>
+            <a href="#" class="btn">Order Now</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <img src="https://images.unsplash.com/photo-1603898037225-1c4d3b7c54a6" alt="Veg Biryani">
+        <div class="card-content">
+            <h3>Veg Biryani</h3>
+            <p>Delicious rice with spices & vegetables.</p>
+            <p class="price">₹180</p>
+            <a href="#" class="btn">Order Now</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <img src="https://images.unsplash.com/photo-1610192244261-3f33de3f55e7" alt="Masala Dosa">
+        <div class="card-content">
+            <h3>Masala Dosa</h3>
+            <p>Crispy dosa with spicy potato filling.</p>
+            <p class="price">₹120</p>
+            <a href="#" class="btn">Order Now</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe" alt="Veg Salad">
+        <div class="card-content">
+            <h3>Fresh Veg Salad</h3>
+            <p>Healthy mix of fresh vegetables.</p>
+            <p class="price">₹100</p>
+            <a href="#" class="btn">Order Now</a>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    📍 Pure Veg | Fresh & Healthy | Contact: 9876543210
+</footer>
+
+</body>
+</html>
