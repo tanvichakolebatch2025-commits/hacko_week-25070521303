@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Browser History List</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: white;
+        margin: 0;
+    }
+
+    header {
+        text-align: center;
+        padding: 20px;
+        font-size: 28px;
+        background: #1e293b;
+    }
+
+    .container {
+        width: 80%;
+        margin: 20px auto;
+    }
+
+    input {
+        padding: 10px;
+        width: 60%;
+        border-radius: 8px;
+        border: none;
+        margin-right: 10px;
+    }
+
+    button {
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        background: #22c55e;
+        color: white;
+    }
+
+    button:hover {
+        opacity: 0.8;
+    }
+
+    ul {
+        margin-top: 20px;
+        padding: 0;
+        list-style: none;
+    }
+
+    li {
+        background: #1e293b;
+        margin-bottom: 10px;
+        padding: 15px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .url {
+        font-weight: bold;
+        color: #38bdf8;
+    }
+
+    .time {
+        font-size: 12px;
+        color: #94a3b8;
+    }
+
+    .delete {
+        background: #ef4444;
+    }
+
+    .clear {
+        margin-top: 10px;
+        background: #f97316;
+    }
+
+</style>
+</head>
+
+<body>
+
+<header>📜 Browser History (List View)</header>
+
+<div class="container">
+
+    <input type="text" id="urlInput" placeholder="Enter website URL">
+    <button onclick="addHistory()">Add</button>
+
+    <ul id="historyList"></ul>
+
+    <button class="clear" onclick="clearAll()">Clear All</button>
+
+</div>
+
+<script>
+
+let historyList = JSON.parse(localStorage.getItem("historyList")) || [];
+
+function saveData() {
+    localStorage.setItem("historyList", JSON.stringify(historyList));
+}
+
+function displayHistory() {
+    const ul = document.getElementById("historyList");
+    ul.innerHTML = "";
+
+    historyList.forEach((item, index) => {
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+            <div class="info">
+                <span class="url">${item.url}</span>
+                <span class="time">${item.time}</span>
+            </div>
+            <button class="delete" onclick="deleteItem(${index})">Delete</button>
+        `;
+
+        ul.appendChild(li);
+    });
+}
+
+function addHistory() {
+    const input = document.getElementById("urlInput");
+
+    if(input.value.trim() !== "") {
+
+        const now = new Date();
+
+        historyList.unshift({
+            url: input.value,
+            time: now.toLocaleString()
+        });
+
+        input.value = "";
+        saveData();
+        displayHistory();
+    }
+}
+
+function deleteItem(index) {
+    historyList.splice(index, 1);
+    saveData();
+    displayHistory();
+}
+
+function clearAll() {
+    historyList = [];
+    saveData();
+    displayHistory();
+}
+
+displayHistory();
+
+</script>
+
+</body>
+</html>
