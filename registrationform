@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Event Registration</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(to right, #ff9a9e, #fad0c4);
+    }
+
+    .container {
+        width: 400px;
+        margin: 50px auto;
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+        text-align: center;
+        color: #ff4e50;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input, select, textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 8px 0 15px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        border-color: #ff4e50;
+        outline: none;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(to right, #ff416c, #ff4e50);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+    }
+
+    .radio-group {
+        display: flex;
+        gap: 10px;
+    }
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>🎉 Event Registration</h2>
+
+    <form>
+        <label>Full Name</label>
+        <input type="text" placeholder="Enter your name" required>
+
+        <label>Email</label>
+        <input type="email" placeholder="Enter your email" required>
+
+        <label>Phone Number</label>
+        <input type="tel" placeholder="Enter your phone number" required>
+
+        <label>College Name</label>
+        <input type="text" placeholder="Enter your college">
+
+        <label>Select Event</label>
+        <select>
+            <option>Hackathon</option>
+            <option>Workshop</option>
+            <option>Coding Competition</option>
+            <option>Seminar</option>
+        </select>
+
+        <label>Gender</label>
+        <div class="radio-group">
+            <label><input type="radio" name="gender"> Male</label>
+            <label><input type="radio" name="gender"> Female</label>
+            <label><input type="radio" name="gender"> Other</label>
+        </div>
+
+        <label>Message</label>
+        <textarea rows="3" placeholder="Any message..."></textarea>
+
+        <button type="submit" class="btn">Register Now 🚀</button>
+    </form>
+</div>
+
+</body>
+</html>
